@@ -1,0 +1,35 @@
+# Importing the boto3 library to interact with AWS services
+import boto3
+
+# Creating a client session for RDS
+# Always avoid hardcoding sensitive credentials; use environment variables or AWS credentials file
+client = boto3.client(
+    'rds',
+    region_name="ap-south-1",
+    aws_access_key_id='YOUR_AWS_ACCESS_KEY',           # Replace with secure reference
+    aws_secret_access_key='YOUR_AWS_SECRET_ACCESS_KEY' # Replace with secure reference
+)
+
+# Checking if any RDS instances are available in the specified region
+response = client.describe_db_instances()
+print(response)
+
+# Creating a new RDS instance in AWS
+# - DBInstanceIdentifier: Unique identifier for the DB instance
+# - Engine: The database engine to use (e.g., 'mysql')
+# - MasterUsername & MasterUserPassword: Credentials for the master user
+# - AllocatedStorage: Storage size in GB
+# - DBInstanceClass: Instance type (e.g., 'db.t4g.micro')
+# - BackupRetentionPeriod: Number of days to retain backups
+# - PubliclyAccessible: Boolean to allow/disallow public access
+response = client.create_db_instance(
+    DBName='mysqldbtestdb',
+    DBInstanceIdentifier='newpoc112',
+    AllocatedStorage=20,
+    DBInstanceClass='db.t4g.micro',
+    Engine='mysql',
+    MasterUsername='admin',
+    BackupRetentionPeriod=0,
+    MasterUserPassword='Mypassword.1',
+    PubliclyAccessible=True
+)
