@@ -1,26 +1,32 @@
-import boto3
+import boto3  # Importing AWS SDK for Python to interact with AWS services like S3
 
 # Initialize S3 client with credentials
+# Security Tip: Use IAM roles, environment variables, or AWS CLI profiles instead of hardcoding credentials.
 client = boto3.client(
     's3',
-    aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
-    aws_secret_access_key='YOUR_SECRET_KEY'  # AWS Secret Key (HIDDEN for security),
-    region_name="ap-south-1"  # Change as per your region
+    aws_access_key_id='YOUR_ACCESS_KEY',         # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',     # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"                     # Specify the AWS region where the S3 buckets are located
 )
 
-# Specify the source and destination S3 paths
-source_bucket = 'divya25'
-source_key = 'input/10000Records.csv'
+# Specify the source S3 bucket and file path
+source_bucket = 'divya25'                        # Source bucket name
+source_key = 'input/10000Records.csv'            # Path of the file in the source bucket
 
-destination_bucket = 'signh'
-destination_key = 'output/10000Records.csv'
+# Specify the destination S3 bucket and file path
+destination_bucket = 'signh'                     # Destination bucket name
+destination_key = 'output/10000Records.csv'      # Path for the file in the destination bucket
 
 try:
+    # Copying the file from the source S3 bucket to the destination S3 bucket
     client.copy_object(
-        Bucket=destination_bucket,
-        CopySource={'Bucket': source_bucket, 'Key': source_key},
-        Key=destination_key
+        Bucket=destination_bucket,               # Destination bucket
+        CopySource={'Bucket': source_bucket, 'Key': source_key},  # Source bucket and file path
+        Key=destination_key                      # Destination file path
     )
+    # Success message after file copy
     print(f"File copied from {source_bucket}/{source_key} to {destination_bucket}/{destination_key}")
 except Exception as e:
+    # Error message if the copy process fails
     print(f"Error copying file: {e}")
+
