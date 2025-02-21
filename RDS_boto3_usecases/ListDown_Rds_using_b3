@@ -1,0 +1,32 @@
+import boto3  # AWS SDK for Python to interact with AWS services like RDS
+
+
+def list_rds_instances():
+    try:
+        # ✅ Create an RDS client with AWS credentials  
+        # ⚠️ **Security Note:** Hardcoding credentials is not recommended.  
+        #    Use environment variables, AWS Secrets Manager, or IAM roles for better security.  
+        rds_client = boto3.client(
+            'rds',
+            aws_access_key_id='YOUR_ACCESS_KEY',  # 🔒 AWS Access Key (HIDDEN for security)
+            aws_secret_access_key='YOUR_SECRET_KEY',  # 🔒 AWS Secret Key (HIDDEN for security)
+            region_name='ap-south-1'  # 🌐 Specify the AWS region
+        )
+
+        # 📋 Fetch the list of RDS DB instances
+        response = rds_client.describe_db_instances()
+
+        # 🔍 Loop through each DB instance in the response and print key details
+        for db_instance in response['DBInstances']:
+            print(f"DB Instance Identifier: {db_instance['DBInstanceIdentifier']}")  # 🏷️ Print instance ID
+            print(f"DB Engine: {db_instance['Engine']}")  # ⚙️ Print database engine type (e.g., MySQL, PostgreSQL)
+            print(f"DB Status: {db_instance['DBInstanceStatus']}")  # 📈 Print instance status (e.g., available, creating)
+            print("-------------------------------")  # 🔗 Separator for readability
+
+    except Exception as e:
+        # ⚡ Error handling: If any exception occurs, it will be caught and displayed
+        print(f"Error: {e}")  # 🛑 Print the error message
+
+
+# 🚀 Call the function to list RDS instances
+list_rds_instances()
