@@ -1,0 +1,42 @@
+import boto3
+import os
+
+# -------------------------------------------
+# Load AWS credentials from environment variables for better security
+# -------------------------------------------
+aws_access_key = os.getenv('AWS_ACCESS_KEY_ID')
+aws_secret_key = os.getenv('AWS_SECRET_ACCESS_KEY')
+
+# -------------------------------------------
+# Create an EC2 client using boto3
+# -------------------------------------------
+client = boto3.client(
+    'ec2',
+    region_name="ap-south-1",              # AWS region where the instance exists
+    aws_access_key_id=aws_access_key,      # Access key from environment variable
+    aws_secret_access_key=aws_secret_key   # Secret key from environment variable
+)
+
+# -------------------------------------------
+# Terminate the specified EC2 instance
+# -------------------------------------------
+response = client.terminate_instances(
+    InstanceIds=['i-0f5eab7322a794432']     # Replace with your actual instance ID
+)
+
+# -------------------------------------------
+# Print the termination response for verification
+# -------------------------------------------
+print("Termination response received from AWS:")
+print(response)
+
+'''
+-------------------------------------------
+💡 How this script works:
+-------------------------------------------
+1. Connects to AWS EC2 using boto3 with secure credentials.
+2. Terminates the EC2 instance specified by Instance ID.
+3. Prints the response, showing termination details.
+
+⚡ **Best Practices for Security:**
+-------------------------------------
