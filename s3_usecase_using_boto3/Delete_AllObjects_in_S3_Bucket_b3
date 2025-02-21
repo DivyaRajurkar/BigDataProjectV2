@@ -1,27 +1,37 @@
-#Code to Delete All Objects in an S3 Bucket
- 
-import boto3
+# Code to Delete All Objects in an S3 Bucket
+
+import boto3  # Importing AWS SDK for Python to interact with AWS services like S3
 
 # Initialize S3 client
+# Security Tip: Use IAM roles, environment variables, or AWS CLI profiles instead of hardcoding credentials.
 client = boto3.client(
     's3',
-    aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
-    aws_secret_access_key='YOUR_SECRET_KEY', # AWS Secret Key (HIDDEN for security)
-    region_name="ap-south-1"  # Change as per your region
+    aws_access_key_id='YOUR_ACCESS_KEY',          # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',      # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"                      # Specify the AWS region where the S3 bucket is located
 )
 
-# Define the bucket name
-bucket_name = 'divya25'
+# Define the bucket name from which objects will be deleted
+bucket_name = 'divya25'                          # S3 bucket name
 
-# List all objects in the bucket
+# List all objects in the specified bucket
 objects = client.list_objects_v2(Bucket=bucket_name)
 
-# Check if bucket contains objects
+# Check if the bucket contains any objects
 if 'Contents' in objects:
-    # Extract object keys
+    # Extract object keys from the list of objects
+    # Object keys are needed to identify files for deletion
     object_keys = [{'Key': obj['Key']} for obj in objects['Contents']]
 
-    # Delete objects in batches (max 1000 per request)
+    # Delete all the objects in the bucket
+    # Note: delete_objects can delete up to 1000 objects per request
     response = client.delete_objects(
-        Bucket=bucket_name,
-        Delete={'Objects': object_keys}
+        Bucket=bucket_name,                      # Specify the bucket name
+        Delete={'Objects': object_keys}           # Provide the list of object keys to delete
+    )
+
+    # Confirm deletion
+    print(f"Deleted objects: {response.get('Deleted', [])}")
+else:
+    # Inform if the bucket is already empty
+    print(f"No objects found in bucket '{bucket_name}'.")
