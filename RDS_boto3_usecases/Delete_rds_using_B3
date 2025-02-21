@@ -1,0 +1,23 @@
+import boto3  # 📚 AWS SDK for Python to interact with AWS services like RDS
+
+# ✅ Creating a client session for RDS
+# ⚡ **Security Tip:** Avoid hardcoding AWS credentials. Use IAM roles, environment variables, or AWS CLI configuration for better security.
+client = boto3.client(
+    'rds',
+    region_name="ap-south-1",             # 🌐 Specify the AWS region where RDS is hosted
+    aws_access_key_id='YOUR_ACCESS_KEY',  # 🔒 AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY'  # 🔒 AWS Secret Key (HIDDEN for security)
+)
+
+# 🗑️ Deleting an existing RDS instance
+# DBInstanceIdentifier: The unique identifier for the DB instance you want to delete
+# SkipFinalSnapshot=True: Skips taking a final snapshot before deletion (be cautious—data cannot be recovered later)
+# DeleteAutomatedBackups=True: Deletes any automated backups associated with the instance
+response = client.delete_db_instance(
+    DBInstanceIdentifier='newpoc14',      # 🏷️ Identifier for the DB instance to delete
+    SkipFinalSnapshot=True,               # 🚫 Skipping the final snapshot before deletion
+    DeleteAutomatedBackups=True           # 🧹 Removing any automated backups linked to this instance
+)
+
+# 🖨️ You can print the response if you want to check the deletion status
+# print(response)  # Uncomment this line if you want to see the deletion response details
