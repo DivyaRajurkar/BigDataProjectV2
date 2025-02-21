@@ -1,0 +1,30 @@
+'''
+The code initializes an S3 client with AWS credentials, lists objects in the specified S3 bucket,
+and prints each object's name, size, and last modified date.
+'''
+
+import boto3  # Importing Boto3 library to interact with AWS services like S3
+
+# Initialize the S3 client
+# Note: It's best practice to use environment variables, IAM roles, or AWS CLI profiles instead of hardcoding credentials.
+client = boto3.client(
+    's3',
+    aws_access_key_id='YOUR_ACCESS_KEY',           # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',       # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"                       # Change as per your AWS region
+)
+
+# Specify the S3 bucket name
+bucket_name = 'divya25'
+
+# List objects in the specified bucket
+objects = client.list_objects_v2(Bucket=bucket_name)
+
+# Check if the bucket contains any objects
+if 'Contents' in objects:
+    # Iterate over each object and print details
+    for obj in objects['Contents']:
+        print(f"File: {obj['Key']}, Size: {obj['Size']} bytes, Last Modified: {obj['LastModified']}")
+else:
+    # Inform if the bucket is empty or doesn't exist
+    print("Bucket is empty or does not exist.")
