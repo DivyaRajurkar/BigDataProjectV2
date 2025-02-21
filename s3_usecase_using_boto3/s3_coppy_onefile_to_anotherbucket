@@ -1,0 +1,26 @@
+import boto3
+
+# Initialize S3 client with credentials
+client = boto3.client(
+    's3',
+    aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY'  # AWS Secret Key (HIDDEN for security),
+    region_name="ap-south-1"  # Change as per your region
+)
+
+# Specify the source and destination S3 paths
+source_bucket = 'divya25'
+source_key = 'input/10000Records.csv'
+
+destination_bucket = 'signh'
+destination_key = 'output/10000Records.csv'
+
+try:
+    client.copy_object(
+        Bucket=destination_bucket,
+        CopySource={'Bucket': source_bucket, 'Key': source_key},
+        Key=destination_key
+    )
+    print(f"File copied from {source_bucket}/{source_key} to {destination_bucket}/{destination_key}")
+except Exception as e:
+    print(f"Error copying file: {e}")
