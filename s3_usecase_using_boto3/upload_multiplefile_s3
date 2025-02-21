@@ -1,0 +1,30 @@
+import boto3  # Importing boto3 library for AWS services interaction
+import os     # Importing os library for file operations
+
+# Initialize S3 client (AWS credentials are hidden for security purposes)
+client = boto3.client(
+    's3',
+    aws_access_key_id='YOUR_ACCESS_KEY',           # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',       # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"                       # AWS region
+)
+
+# Define the local folder path
+local_folder = r"C:\bigdata\s3_upload"  # Local folder path (raw string used)
+bucket_name = 'divya25'                 # S3 bucket name
+s3_folder = 'input/'                    # Folder inside S3 where files will be uploaded
+
+# Iterate through all files in the local folder
+for filename in os.listdir(local_folder):
+    local_file_path = os.path.join(local_folder, filename)  # Full local file path
+
+    # Ensure it's a file and not a subfolder
+    if os.path.isfile(local_file_path):
+        s3_object_name = s3_folder + filename  # File path inside the "input" folder in S3
+
+        # Upload the file to S3
+        client.upload_file(local_file_path, bucket_name, s3_object_name)
+        print(f"Uploaded: {filename} -> {s3_object_name}")  # Confirmation message after upload
+
+# Final confirmation after all files are uploaded
+print("All files uploaded successfully!")
