@@ -1,0 +1,28 @@
+'''
+The code creates a Boto3 session with AWS credentials, initializes an S3 client,
+retrieves a list of all buckets in the account, and prints each bucket's name.
+'''
+
+import boto3  # Importing Boto3 library to interact with AWS services like S3
+
+# Create a boto3 session
+# NOTE: For better security, use environment variables, AWS CLI configuration, or IAM roles instead of hardcoding credentials.
+session = boto3.Session(
+    aws_access_key_id='YOUR_ACCESS_KEY',           # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',       # AWS Secret Key (HIDDEN for security)
+    region_name='ap-south-1'                       # Change as per your AWS region
+)
+
+# Create an S3 client from the session
+s3 = session.client('s3')
+
+# Retrieve the list of all buckets in the AWS account
+response = s3.list_buckets()
+
+# Iterate through the list and print each bucket's name
+if 'Buckets' in response:
+    print("List of S3 Buckets in your account:")
+    for bucket in response['Buckets']:
+        print(bucket['Name'])
+else:
+    print("No buckets found in the account.")
