@@ -1,0 +1,27 @@
+#Code to Delete All Objects in an S3 Bucket
+ 
+import boto3
+
+# Initialize S3 client
+client = boto3.client(
+    's3',
+    aaws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
+                      aws_secret_access_key='YOUR_SECRET_KEY', # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"  # Change as per your region
+)
+
+# Define the bucket name
+bucket_name = 'divya25'
+
+# List all objects in the bucket
+objects = client.list_objects_v2(Bucket=bucket_name)
+
+# Check if bucket contains objects
+if 'Contents' in objects:
+    # Extract object keys
+    object_keys = [{'Key': obj['Key']} for obj in objects['Contents']]
+
+    # Delete objects in batches (max 1000 per request)
+    response = client.delete_objects(
+        Bucket=bucket_name,
+        Delete={'Objects': object_keys}
