@@ -1,0 +1,43 @@
+import boto3  # AWS SDK for Python to interact with AWS services like RDS
+
+# Creating a client session for RDS using region name, aws_access_key_id & aws_secret_access_key
+# Note: Hardcoding credentials is a security risk. Use environment variables, IAM roles, or AWS Secrets Manager instead.
+client = boto3.client('rds',
+                      region_name="ap-south-1",  # Specify the AWS region
+                      aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
+                      aws_secret_access_key='YOUR_SECRET_KEY'  # AWS Secret Key (HIDDEN for security)
+                     )
+
+# Deleting an existing RDS instance
+# DBInstanceIdentifier: Specifies the RDS instance to be deleted
+# SkipFinalSnapshot=True: Skips creating a final backup snapshot before deletion (use with caution)
+# DeleteAutomatedBackups=True: Deletes any automated backups associated with the instance
+response = client.delete_db_instance(
+    DBInstanceIdentifier='newpoc1',  # Identifier for the DB instance to be deleted
+    SkipFinalSnapshot=True,  # Skipping final snapshot creation
+    DeleteAutomatedBackups=True  # Deleting associated automated backups
+)
+
+# Checking available RDS instances after deletion
+# This describes all available DB instances to confirm deletion
+response = client.describe_db_instances()
+print(response)  # Prints the details of existing RDS instances
+
+# Creating a new RDS instance in AWS
+# DBInstanceIdentifier: Unique name for the new RDS instance
+# AllocatedStorage: Specifies the size of storage in GB
+# DBInstanceClass: Defines the instance type (e.g., db.t4g.micro for micro instances)
+# Engine: Specifies the database engine (e.g., MySQL, PostgreSQL)
+# MasterUsername & MasterUserPassword: Credentials for database access (HIDDEN for security)
+# PubliclyAccessible=True: Makes the instance accessible from the internet (ensure proper security groups)
+response = client.create_db_instance(
+    DBName='mysqldbtestdb',  # Name of the database
+    DBInstanceIdentifier='newpoc14',  # Identifier for the new DB instance
+    AllocatedStorage=20,  # Allocated storage in GB
+    DBInstanceClass='db.t4g.micro',  # Instance class (defines CPU & RAM)
+    Engine='mysql',  # Database engine
+    MasterUsername='admin',  # Master username for DB access
+    MasterUserPassword='YOUR_DB_PASSWORD',  # Master password (HIDDEN for security)
+    BackupRetentionPeriod=0,  # No backup retention (0 means no backups)
+    PubliclyAccessible=True  # Instance is publicly accessible (use with proper security measures)
+)
