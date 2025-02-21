@@ -1,0 +1,66 @@
+import boto3  # AWS SDK for Python to interact with AWS services like RDS
+import botocore.exceptions  # For handling AWS-specific client errors
+
+try:
+    # ✅ Creating a client session for RDS  
+    # ⚠️ **Security Note:** Hardcoding credentials is not recommended.  
+    #    Use environment variables, IAM roles, or AWS Secrets Manager for better security.  
+    client = boto3.client('rds',
+                          region_name="ap-south-1",  # 🌐 Specify the AWS region
+                          aws_access_key_id='YOUR_ACCESS_KEY',  # 🔒 AWS Access Key (HIDDEN for security)
+                          aws_secret_access_key='YOUR_SECRET_KEY'  # 🔒 AWS Secret Key (HIDDEN for security)
+                          )
+
+    try:
+        # 🗑️ Deleting an existing RDS instance
+        # DBInstanceIdentifier: Name of the RDS instance to delete
+        # SkipFinalSnapshot=True: Skips the final snapshot before deletion (use with caution)
+        # DeleteAutomatedBackups=True: Deletes automated backups associated with the instance
+        print("Deleting RDS instance...")
+        response = client.delete_db_instance(
+            DBInstanceIdentifier='newpoc112',  # 🏷️ Identifier for the DB instance to delete
+            SkipFinalSnapshot=True,  # 🚫 Skipping final snapshot creation
+            DeleteAutomatedBackups=True  # 🧹 Removing automated backups
+        )
+        print("RDS instance deleted successfully.")  # ✅ Deletion confirmation message
+    except botocore.exceptions.ClientError as e:
+        # ⚡ Handles errors specific to AWS RDS deletion
+        print(f"Error deleting RDS instance: {e}")
+
+    try:
+        # 🔍 Checking available RDS instances after deletion
+        # Calls describe_db_instances() to list any remaining DB instances
+        print("Checking available RDS instances...")
+        response = client.describe_db_instances()  # 📋 Describes all existing DB instances
+        print(response)  # 🖨️ Prints the details of available instances
+    except botocore.exceptions.ClientError as e:
+        # ⚡ Handles errors while describing instances
+        print(f"Error describing RDS instances: {e}")
+
+    try:
+        # 🚀 Creating a new RDS instance in AWS
+        # DBName: Specifies the database name
+        # AllocatedStorage: Storage allocated for the database (in GB)
+        # DBInstanceClass: Defines the DB instance type (CPU & memory configuration)
+        # Engine: Specifies the DB engine (e.g., MySQL, PostgreSQL)
+        # MasterUsername & MasterUserPassword: Credentials for database access (password hidden for security)
+        # PubliclyAccessible=True: Makes the instance accessible from the internet (ensure proper security groups)
+        print("Creating new RDS instance...")
+        response = client.create_db_instance(
+            DBName='mysqldbtestdb',  # 🏷️ Database name
+            DBInstanceIdentifier='newpoc1',  # 🏷️ Identifier for the new DB instance
+            AllocatedStorage=20,  # 💾 Allocated storage in GB
+            DBInstanceClass='db.t4g.micro',  # ⚡ Instance class (CPU & memory configuration)
+            Engine='mysql',  # ⚙️ Database engine
+            MasterUsername='admin',  # 👤 Master username for DB access
+            MasterUserPassword='YOUR_DB_PASSWORD',  # 🔒 Master password (HIDDEN for security)
+            PubliclyAccessible=True  # 🌐 Makes the DB instance publicly accessible (secure appropriately)
+        )
+        print("RDS instance created successfully.")  # ✅ Confirmation message after successful creation
+    except botocore.exceptions.ClientError as e:
+        # ⚡ Handles errors during the creation process
+        print(f"Error creating RDS instance: {e}")
+
+except Exception as e:
+    # 🛑 Handles any unexpected errors during execution
+    print(f"Unexpected error: {e}")
