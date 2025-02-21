@@ -5,8 +5,8 @@ import boto3
 # Initialize S3 client
 client = boto3.client(
     's3',
-    aaws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
-                      aws_secret_access_key='YOUR_SECRET_KEY', # AWS Secret Key (HIDDEN for security)
+    aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY', # AWS Secret Key (HIDDEN for security)
     region_name="ap-south-1"  # Change as per your region
 )
 
