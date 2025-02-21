@@ -1,0 +1,19 @@
+#Code to Create a Folder in S3
+import boto3
+
+# Initialize S3 client
+client = boto3.client(
+    's3',
+    aws_access_key_id='YOUR_ACCESS_KEY',  # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',  # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"  # Change as per your region
+)
+
+# Define bucket name and folder name
+bucket_name = 'divya25'  # Your S3 bucket name
+folder_name = 'input'  # Folder name with trailing slash
+
+# Create an empty object to represent the folder
+client.put_object(Bucket=bucket_name, Key=folder_name)
+
+print(f"Folder '{folder_name}' created successfully in bucket '{bucket_name}'.")
