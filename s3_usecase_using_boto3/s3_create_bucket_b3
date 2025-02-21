@@ -1,0 +1,23 @@
+import boto3  # Importing AWS SDK for Python to interact with AWS services like S3
+
+# Creating an S3 client session
+# Security Tip: It's recommended to use IAM roles, environment variables, or AWS CLI profiles instead of hardcoding credentials.
+s3_client = boto3.client(
+    's3',
+    aws_access_key_id='YOUR_ACCESS_KEY',          # AWS Access Key (HIDDEN for security)
+    aws_secret_access_key='YOUR_SECRET_KEY',      # AWS Secret Key (HIDDEN for security)
+    region_name="ap-south-1"                      # Specify the AWS region where the bucket will be created
+)
+
+# Defining the bucket name
+bucket_name = "boto_bucket1"  # Unique bucket name (must be globally unique across all AWS S3 users)
+
+# Creating an S3 bucket
+# The 'CreateBucketConfiguration' specifies the region for the bucket (except for 'us-east-1' where it's not required)
+s3_client.create_bucket(
+    Bucket=bucket_name,
+    CreateBucketConfiguration={"LocationConstraint": "ap-south-1"}  # Specify region if not 'us-east-1'
+)
+
+# Confirmation message after successful bucket creation
+print(f"Bucket '{bucket_name}' created successfully!")
